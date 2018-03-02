@@ -11,6 +11,8 @@ contract eaProto2 {
     uint256 price;
     bool paid;
 
+    //date tracking variables
+    string dateMade;
     string datePaid;
 
     //events
@@ -19,7 +21,8 @@ contract eaProto2 {
       address indexed _admin,
       address indexed _client,
       string _name,
-      uint256 _price
+      uint256 _price,
+      string _dateMade
       );
 
       //event to log when jobs are paid for by the client
@@ -40,7 +43,7 @@ contract eaProto2 {
 
 
     //addJob function : set details of the job
-    function addJob(address _client, string _name, string _description, uint256 _quoteNo, uint256 _price) public {
+    function addJob(address _client, string _name, string _description, uint256 _quoteNo, uint256 _price, string _dateMade) public {
 
         //set the state variables
         admin = msg.sender;
@@ -50,9 +53,10 @@ contract eaProto2 {
         quoteNo = _quoteNo;
         price = _price;
         paid = false;
+        dateMade = _dateMade;
 
         //call event, pass in parameters
-        LogAddJob(admin, client, name, price);
+        LogAddJob(admin, client, name, price, dateMade);
 
     }
 
@@ -65,10 +69,11 @@ contract eaProto2 {
         uint256 _quoteNo,
         uint256 _price,
         bool _paid,
-        string _datePaid
+        string _datePaid,
+        string _dateMaid
       ){
         //return values
-        return(admin, client, name, description, quoteNo, price, paid, datePaid);
+        return(admin, client, name, description, quoteNo, price, paid, datePaid, dateMade);
 
       }
 

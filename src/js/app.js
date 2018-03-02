@@ -5,7 +5,7 @@ App = {
 
 
      init: function() {
-
+          $date = new Date();
           return App.initWeb3();
      },
 
@@ -51,8 +51,8 @@ App = {
          }
 
          //log the date to the console
-         var date = new Date();
-         console.log(date.toUTCString());
+         //var date = new Date();
+         console.log($date.toUTCString());
        });
 
 
@@ -103,10 +103,14 @@ App = {
        App.contracts.eaProto2.deployed().then(function(instance) {
         return instance.getJob();
       }).then(function(job){
+        //check if any jobs exist
         if(job[0] == 0x0) {
           //no job
           return;
         }
+
+        //get the price of the job
+        var price = web3.fromWei(job[5], "ether");
 
         //set default status, if true set status to
         var status = "Unpaid";
@@ -115,7 +119,7 @@ App = {
         }
 
         //check if user is admin
-        var admin = job[0];
+        var admin = job[0].substring(0,8) + "...";
         if(admin == App.account) {
           admin = "You are the owner of this job";
         }
@@ -123,7 +127,7 @@ App = {
         //get gbp value
         //var gbpPrice = App.convertToGbp(web3.fromWei(job[5], "ether"));
         //console.log(gbpPrice);
-
+        console.log("This is: " + job[8]);
 
         //get jobs display location
         var jobs = $('#jobs');
@@ -145,7 +149,9 @@ App = {
         + status +
         '</td><td>'
         + admin +
-        '</td></tr>');
+        '</td><td>'
+        + job[8] +
+        '</td><td><button type="button" class="btn btn-default btn-pay" onclick="App.payJob(); return false;">Buy</button></td></tr>');
 
 
       }).catch(function(err) {
@@ -164,6 +170,7 @@ App = {
         var _jobs_quote_no = $('#jobs_quoteNo').val();
         var _jobs_price = web3.toWei(parseFloat($('#jobs_price').val() || 0));
         var _jobs_description = $('#jobs_description').val();
+        var _dateMade = $date.toUTCString();
 
         if((_jobs_name.trim() == '') || (_jobs_price == 0)) {
           //no new jobs
@@ -171,7 +178,7 @@ App = {
         }
 
         App.contracts.eaProto2.deployed().then(function (instance) {
-          return instance.addJob(_jobs_client, _jobs_name, _jobs_description, _jobs_quote_no, _jobs_price, {
+          return instance.addJob(_jobs_client, _jobs_name, _jobs_description, _jobs_quote_no, _jobs_price, _dateMade, {
             from: App.account,
             gas: 500000,
           });
@@ -181,6 +188,8 @@ App = {
         }).catch(function(err) {
           //log errors
           console.error(err);
+        }).then(function() {
+          console.log("Date is: " + $date);
         });
 
     },
