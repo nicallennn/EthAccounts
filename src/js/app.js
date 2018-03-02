@@ -36,11 +36,17 @@ App = {
 
      displayAccountInfo: function() {
        web3.eth.getCoinbase(function(err, account) {
+         //get user account and check for error
          if(err === null) {
+           //account == user account
            App.account = account;
+           //append account to dom
            $('#account').text("Account: " + account);
+           //get balance of account
            web3.eth.getBalance(account, function(err, balance){
+             //get user balance
              if(err === null){
+               //append balnace to dom
                $('#accountBalance').text("Balance: " + web3.fromWei(balance, "ether").toFixed(4) + " ETH");
              }
              //convert the balance to gbp
@@ -48,10 +54,6 @@ App = {
 
            });
          }
-
-         //log the date to the console
-         //var date = new Date();
-         console.log($date.toUTCString());
        });
 
 
@@ -60,13 +62,14 @@ App = {
 /***********                   **************                   ************/
 
      convertToGbp: function(balanceInEth) {
+       //call api to get current eth value
        var ethValue = "https://api.coinmarketcap.com/v1/ticker/ethereum/?convert=GBP&limit=1";
        $.getJSON(ethValue, function(data){
+         //calculate gbp price
          var gbp = (data[0].price_gbp * balanceInEth);
+         //append gbp to dom
          $('#accountGbp').text("£" + (gbp).toFixed(2));
-           //test output
-           //console.log(gbp);
-           //return gbp;
+
        });
 
      },
@@ -93,7 +96,7 @@ App = {
 
 /***********                   **************                   ************/
 
-    //contract functions
+    // CONTRACT FUNCTIONS
 
     reloadJobs: function() {
        //refresh account info
@@ -171,13 +174,16 @@ App = {
         var _jobs_description = $('#jobs_description').val();
         var _dateMade = $date.toUTCString();
 
+        //check for jobs
         if((_jobs_name.trim() == '') || (_jobs_price == 0)) {
           //no new jobs
           return false;
         }
 
+        //get instance of that contract and call addJob function
         App.contracts.eaProto2.deployed().then(function (instance) {
           return instance.addJob(_jobs_client, _jobs_name, _jobs_description, _jobs_quote_no, _jobs_price, _dateMade, {
+            //metadata for function
             from: App.account,
             gas: 500000,
           });
@@ -212,6 +218,7 @@ App = {
       //call the payJob function
       App.contracts.eaProto2.deployed().then(function(instance) {
         return instance.payJob(_date, {
+          //metadata for function
           from: App.account,
           value: web3.toWei(_price, "ether"),
           gas: 600000
@@ -229,7 +236,7 @@ App = {
 
 /***********                   **************                   ************/
 
-    //listen for contract triggered events
+    // EVENTS
     eventListener: function() {
         //get instance of deployed contact
         App.contracts.eaProto2.deployed().then(function(instance) {
@@ -243,7 +250,7 @@ App = {
             }
             App.reloadJobs();
           });
-
+          //add event listener
           instance.LogPayJob({}, {}).watch(function(error, event) {
             //check for errors
             if(!error) {
