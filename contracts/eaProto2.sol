@@ -78,6 +78,33 @@ contract eaProto2 {
       }
 
       //payJob function : pay for a job
+      function payJob() payable public {
+        //check job has not already been paid
+        require(paid != true);
+
+        //check client paying is not the admin
+        require(msg.sender != admin);
+
+        //check the price
+        require(msg.value == price);
+
+        //store payment date
+        //datePaid = _date;
+
+        //handle payment
+        admin.transfer(msg.value);
+
+        //set status to Paid
+        paid = true;
+
+        //trigger event
+        LogPayJob(client, admin, name, price, "1/1/1");
+
+
+
+      }
+/*
+      //payJob function : pay for a job
       function payJob(string _date) payable public {
         //check job has not already been paid
         require(paid != true);
@@ -104,6 +131,6 @@ contract eaProto2 {
 
       }
 
-
+*/
 
 }

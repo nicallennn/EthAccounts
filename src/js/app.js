@@ -34,7 +34,6 @@ App = {
 
 /***********                   **************                   ************/
 
-     //display account info function
      displayAccountInfo: function() {
        web3.eth.getCoinbase(function(err, account) {
          if(err === null) {
@@ -124,13 +123,10 @@ App = {
           admin = "You are the owner of this job";
         }
 
-        //get gbp value
-        //var gbpPrice = App.convertToGbp(web3.fromWei(job[5], "ether"));
-        //console.log(gbpPrice);
-        console.log("This is: " + job[8]);
 
         //get jobs display location
         var jobs = $('#jobs');
+        var price = web3.fromWei(job[5], "ether");
 
         //add to jobsRow -> move this below next section
         $('#jobsRow').append(jobs.html());
@@ -144,14 +140,14 @@ App = {
         '</td><td>'
         + job[4] +
         '</td><td>'
-        + web3.fromWei(job[5], "ether") +
+        + price +
         '</td><td>'
         + status +
         '</td><td>'
         + admin +
         '</td><td>'
         + job[8] +
-        '</td><td><button type="button" class="btn btn-default btn-pay" onclick="App.payJob(); return false;">Buy</button></td></tr>');
+        '</td><td><button type="button" class="btn btn-default btn-pay" data-value="{' + price + '}" onclick="App.payJob(); return false;">Buy</button></td></tr>');
 
 
       }).catch(function(err) {
@@ -188,9 +184,41 @@ App = {
         }).catch(function(err) {
           //log errors
           console.error(err);
-        }).then(function() {
-          console.log("Date is: " + $date);
         });
+
+    },
+
+/***********                   **************                   ************/
+
+    payJob: function() {
+      //block default events
+      event.preventDefault();
+
+      //get the job price. event.target is the button clicked
+      var _price = $(event.target).data('value');
+
+      //remove all non-numeric chars
+      _price = _price.replace(/[^0-9\.]+/g, "");
+
+      //parse to float
+      _price = parseFloat(_price);
+
+
+      //call the payJob function
+      App.contracts.eaProto2.deployed().then(function(instance) {
+        return instance.payJob( {
+          from: App.account,
+          value: web3.toWei(_price, "ether"),
+          gas: 600000
+        }).then(function(result) {
+
+          //catch any errors
+        }).catch(function(err) {
+          //log errors
+          console.error(err);
+        });
+      });
+
 
     },
 
@@ -206,9 +234,23 @@ App = {
               //add events to list on page
               $("#events").append('<li class="list-group-item"> ' + event.args._name + ' has been added.</li>')
             } else {
+              console.error(error);
             }
             App.reloadJobs();
-          })
+          });
+
+          instance.LogPayJob({}, {}).watch(function(error, event) {
+            //check for errors
+            if(!error) {
+              //add events to list on page
+              $("#events").append('<li class="list-group-item"> ' + event.args._client + ' client paid ' + event.args._admin +
+                ' ' + event.args._price + ' for '  + event.args._name + '</li>')
+            } else {
+              console.error(error);
+            }
+            App.reloadJobs();
+          });
+
         });
     }
 

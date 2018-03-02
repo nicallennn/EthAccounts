@@ -38,14 +38,21 @@
 
   <div class="container">
 
+    <!--
     <button class="btn btn-default btn-lg pull-right" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Events</button>
-    <button class="btn btn-default btn-lg pull-left" data-toggle="modal" data-target="#newJob">New Job</button>
+  -->
 
-    <div>
-    <ul id="#events" class="collapse list-group"></ul>
+
+    <button class="btn btn-default btn-lg pull-right" data-toggle="modal" data-target="#newJob">New Job</button>
+
+    <div id="#events" class="collapse">
+    <ul id="#events" class="list-group"></ul>
     </div>
 
+
+
     <div class="col-md-12" id="jobs-list">
+
 
       <div id="jobsRow" class="row">
         <!-- JOBS LOAD HERE -->
@@ -55,7 +62,9 @@
 
 
   <div id="jobs" style="display: none;">
+
     <div class="row-lg-12">
+      <h2>Jobs</h2>
 
       <!--
       <div class="panel panel-default panel-article">
@@ -73,7 +82,7 @@
       </div>
 
     -->
-    <table id="jobs-table" class="table">
+    <table id="jobs-table" class="table ">
   <thead>
     <tr>
       <th scope="col">Name</th>
