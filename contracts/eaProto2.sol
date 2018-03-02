@@ -54,6 +54,7 @@ contract eaProto2 {
         price = _price;
         paid = false;
         dateMade = _dateMade;
+        datePaid = "";
 
         //call event, pass in parameters
         LogAddJob(admin, client, name, price, dateMade);
@@ -78,7 +79,7 @@ contract eaProto2 {
       }
 
       //payJob function : pay for a job
-      function payJob() payable public {
+      function payJob(string _date) payable public {
         //check job has not already been paid
         require(paid != true);
 
@@ -89,7 +90,7 @@ contract eaProto2 {
         require(msg.value == price);
 
         //store payment date
-        //datePaid = _date;
+        datePaid = _date;
 
         //handle payment
         admin.transfer(msg.value);

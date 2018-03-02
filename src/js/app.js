@@ -93,7 +93,9 @@ App = {
 
 /***********                   **************                   ************/
 
-     reloadJobs: function() {
+    //contract functions
+
+    reloadJobs: function() {
        //refresh account info
        App.displayAccountInfo();
 
@@ -147,8 +149,9 @@ App = {
         + admin +
         '</td><td>'
         + job[8] +
+        '</td><td>'
+        + job[7] +
         '</td><td><button type="button" class="btn btn-default btn-pay" data-value="{' + price + '}" onclick="App.payJob(); return false;">Buy</button></td></tr>');
-
 
       }).catch(function(err) {
         console.error(err.message);
@@ -157,7 +160,7 @@ App = {
 
      },
 
-/***********                   **************                   ************/
+
 
     addJob: function() {
         //get the details of the new job
@@ -188,7 +191,7 @@ App = {
 
     },
 
-/***********                   **************                   ************/
+
 
     payJob: function() {
       //block default events
@@ -203,10 +206,12 @@ App = {
       //parse to float
       _price = parseFloat(_price);
 
+      //het utc date
+      _date = $date.toUTCString();
 
       //call the payJob function
       App.contracts.eaProto2.deployed().then(function(instance) {
-        return instance.payJob( {
+        return instance.payJob(_date, {
           from: App.account,
           value: web3.toWei(_price, "ether"),
           gas: 600000
