@@ -78,12 +78,12 @@ App = {
 
      initContract: function() {
           //jquery ajax call
-          $.getJSON('eaProto2.json', function(eaProto1Artifact) {
+          $.getJSON('ethAccounts.json', function(ethAccountsArtifact) {
             //get contract and init truffle contract abstraction
-            App.contracts.eaProto2 = TruffleContract(eaProto1Artifact);
+            App.contracts.ethAccounts = TruffleContract(ethAccountsArtifact);
 
             //set provider for contract
-            App.contracts.eaProto2.setProvider(App.web3Provider);
+            App.contracts.ethAccounts.setProvider(App.web3Provider);
 
             //add event eventListener
             App.eventListener();
@@ -104,7 +104,7 @@ App = {
 
        //get the job placeholder
        $('#jobsRow').empty();
-       App.contracts.eaProto2.deployed().then(function(instance) {
+       App.contracts.ethAccounts.deployed().then(function(instance) {
         return instance.getJob();
       }).then(function(job){
         //check if any jobs exist
@@ -181,7 +181,7 @@ App = {
         }
 
         //get instance of that contract and call addJob function
-        App.contracts.eaProto2.deployed().then(function (instance) {
+        App.contracts.ethAccounts.deployed().then(function (instance) {
           return instance.addJob(_jobs_client, _jobs_name, _jobs_description, _jobs_quote_no, _jobs_price, _dateMade, {
             //metadata for function
             from: App.account,
@@ -216,7 +216,7 @@ App = {
       _date = $date.toUTCString();
 
       //call the payJob function
-      App.contracts.eaProto2.deployed().then(function(instance) {
+      App.contracts.ethAccounts.deployed().then(function(instance) {
         return instance.payJob(_date, {
           //metadata for function
           from: App.account,
@@ -239,7 +239,7 @@ App = {
     // EVENTS
     eventListener: function() {
         //get instance of deployed contact
-        App.contracts.eaProto2.deployed().then(function(instance) {
+        App.contracts.ethAccounts.deployed().then(function(instance) {
           instance.LogAddJob({}, {}).watch(function(error, event) {
             //check for errors
             if(!error) {
