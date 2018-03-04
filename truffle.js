@@ -8,11 +8,11 @@ module.exports = {
                network_id: "*" // Match any network id
           },
 
-          eaProto2: {
+          ethAccounts: {
             host: "localhost",
             port: 8545,
             network_id: "4224",
-            gas: 4700000,            
+            gas: 4700000,
           }
 
      }
