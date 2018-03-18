@@ -80,7 +80,7 @@ contract ethAccounts {
     }
 
     //get number of unpaid jobs
-    function getUnpaidJobsLength() public view returns (uint) {
+    function getJobsLength() public view returns (uint) {
           return jobCounter;
     }
 
@@ -117,22 +117,55 @@ contract ethAccounts {
 
     }
 
+    //get unpaid get unpaid job id's - > return array
+    function getPaidJobs() public view returns (uint[]) {
+        //output array
+        uint[] memory jobIds = new uint[](jobCounter);
+
+        //unpaid job counter
+        uint paid = 0;
+
+        //iterate jobs
+        for(uint i = 1; i <= jobCounter; i++) {
+          //if unpaid add to array
+            if(jobs[i].paid == true) {
+              jobIds[paid] = jobs[i].jobId;
+              paid++;
+            }
+        }
+
+        uint[] memory sortedJobs = new uint[](paid);
+
+        //copy jobIds array to new can pay array
+        for(uint j = 0; j < paid; j++) {
+
+            // this line of code causes invalid opcode error
+            sortedJobs[j] = jobIds[j];
+
+        }
+
+        //return sorted array
+        return sortedJobs;
+
+
+    }
+
       //payJob function : pay for a job
-      function payJob(uint _jobId, string _date) payable public {
+      function payJob(uint _jobId, string _date) payable onlyClient(msg.sender) public {
           //check job has not already been paid
           require(jobCounter > 0);
 
           //check there is atleast one existing job
           require(_jobId > 0 && _jobId <= jobCounter);
 
+
           //get the article from the mapping assos array -> store in contract state
           Job storage job = jobs[_jobId];
 
-          //check it is the client paying
-          require(msg.sender == job.client);
-
+          //check the job has not already been Paid
+          require(job.paid != true);
           //check client paying is not the admin
-          require(msg.sender != job.admin);
+          //require(msg.sender != job.admin);
 
           //check the price
           require(msg.value == job.price);
