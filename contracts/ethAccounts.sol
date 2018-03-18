@@ -48,8 +48,8 @@ contract ethAccounts {
 
 
     //modifyer to allow only the stated client to pay for a job
-    modifier onlyClient(address _clientAddress) {
-      require(msg.sender == _clientAddress);
+    modifier onlyClient(uint _jobId) {
+      require(msg.sender == jobs[_jobId].client);
       _;
     }
 
@@ -84,8 +84,8 @@ contract ethAccounts {
           return jobCounter;
     }
 
-    //get unpaid get unpaid job id's - > return array
-    function getUnpaidJobs() public view returns (uint[]) {
+    //get unpaid job id's - > return array
+    function getUnpaidJobs(bool adminOrClient) public view returns (uint[]) {
         //output array
         uint[] memory jobIds = new uint[](jobCounter);
 
@@ -94,21 +94,29 @@ contract ethAccounts {
 
         //iterate jobs
         for(uint i = 1; i <= jobCounter; i++) {
-          //if unpaid add to array
-            if(jobs[i].paid == false) {
-              jobIds[unpaid] = jobs[i].jobId;
-              unpaid++;
+            //if unpaid add to array
+            //if admin user, get unpiad jobs
+            if(adminOrClient){
+                if(!jobs[i].paid && jobs[i].admin == msg.sender) {
+                  jobIds[unpaid] = jobs[i].jobId;
+                  unpaid++;
+                }
             }
-        }
+            //if client user, get unpaid jobs, && jobs[i].client == msg.sender
+            else{
+                if(!jobs[i].paid && jobs[i].client == msg.sender) {
+                  jobIds[unpaid] = jobs[i].jobId;
+                  unpaid++;
+                }
+             }
+          }
 
+        //initialise new memory array with size of unpaid variable
         uint[] memory sortedJobs = new uint[](unpaid);
 
-        //copy jobIds array to new can pay array
+        //copy jobIds array to new smaller array
         for(uint j = 0; j < unpaid; j++) {
-
-            // this line of code causes invalid opcode error
             sortedJobs[j] = jobIds[j];
-
         }
 
         //return sorted array
@@ -118,7 +126,7 @@ contract ethAccounts {
     }
 
     //get unpaid get unpaid job id's - > return array
-    function getPaidJobs() public view returns (uint[]) {
+    function getPaidJobs(bool adminOrClient) public view returns (uint[]) {
         //output array
         uint[] memory jobIds = new uint[](jobCounter);
 
@@ -128,11 +136,21 @@ contract ethAccounts {
         //iterate jobs
         for(uint i = 1; i <= jobCounter; i++) {
           //if unpaid add to array
-            if(jobs[i].paid == true) {
+          //if admin user, get unpiad jobs
+          if(adminOrClient ){
+              if(jobs[i].paid && jobs[i].admin == msg.sender) {
+                jobIds[paid] = jobs[i].jobId;
+                paid++;
+              }
+          }
+          //if client user, get unpaid jobs
+          else {
+            if(jobs[i].paid && jobs[i].client == msg.sender) {
               jobIds[paid] = jobs[i].jobId;
               paid++;
-            }
+          }
         }
+      }
 
         uint[] memory sortedJobs = new uint[](paid);
 
@@ -151,7 +169,7 @@ contract ethAccounts {
     }
 
       //payJob function : pay for a job
-      function payJob(uint _jobId, string _date) payable onlyClient(msg.sender) public {
+      function payJob(uint _jobId, string _date) payable onlyClient(_jobId) public {
           //check job has not already been paid
           require(jobCounter > 0);
 
@@ -164,8 +182,9 @@ contract ethAccounts {
 
           //check the job has not already been Paid
           require(job.paid != true);
+
           //check client paying is not the admin
-          //require(msg.sender != job.admin);
+          require(msg.sender != job.admin);
 
           //check the price
           require(msg.value == job.price);
