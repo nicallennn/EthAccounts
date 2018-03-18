@@ -2,6 +2,7 @@ App = {
      web3Provider: null,
      contracts: {},
      account: 0x0,
+     loading: false,
 
 
      init: function() {
@@ -99,71 +100,102 @@ App = {
     // CONTRACT FUNCTIONS
 
     reloadJobs: function() {
+      //check reentry
+      if(App.loading) {
+        return;
+      }
+      App.loading = true;
+
        //refresh account info
        App.displayAccountInfo();
 
-       //get the job placeholder
-       $('#jobsRow').empty();
+       //store instance of contract
+       var ethAccountsInstance;
+
+       // //get the job placeholder
+       // $('#jobsRow').empty();
+
        App.contracts.ethAccounts.deployed().then(function(instance) {
-        return instance.getJob();
-      }).then(function(job){
-        //check if any jobs exist
-        if(job[0] == 0x0) {
-          //no job
-          return;
+         //store contact instance
+         ethAccountsInstance = instance;
+         //get unpaid jobs
+        return ethAccountsInstance.getUnpaidJobs(true);
+      }).then(function(jobIds){
+        //clear the job fromWei
+        $('#jobsRow').empty();
+
+        //iterate over jobIds array
+        for(var i = 0; i < jobIds.length; i++){
+          var jobId = jobIds[i];
+          ethAccountsInstance.jobs(jobId.toNumber()).then(function(job) {
+            App.displayUnpaidAdminJob(job[0], job[3], job[2], job[4], job[5], job[6], job[7], job[8] );           /////////////////////////
+          });
+
         }
 
-        //get the price of the job
-        var price = web3.fromWei(job[5], "ether");
+        return ethAccountsInstance.getUnpaidJobs(false);
+      }).then(function(jobIds) {
 
-        //set default status, if true set status to
-        var status = "Unpaid";
-        if(job[6] == true) {
-            status = "Paid";
+        //iterate over jobIds array
+        for(var i = 0; i < jobIds.length; i++){
+          var jobId = jobIds[i];
+          ethAccountsInstance.jobs(jobId.toNumber()).then(function(job) {
+            App.displayUnpaidClientJobs(job[0], job[3], job[1], job[4], job[5], job[6], job[8]);           /////////////////////////
+          });
         }
 
-        //check if user is admin
-        var admin = job[0].substring(0,8) + "...";
-        if(admin == App.account) {
-          admin = "You are the owner of this job";
-        }
-
-
-        //get jobs display location
+        App.loading = false;
         var jobs = $('#jobs');
-        var price = web3.fromWei(job[5], "ether");
-
-        //add to jobsRow -> move this below next section
         $('#jobsRow').append(jobs.html());
 
-        $('#jobs-table').append('<tr><td>'
-        + job[2] +
-        '</td><td>'
-        + job[1].substring(0,8) + "..." +
-        '</td><td>'
-        + job[3] +
-        '</td><td>'
-        + job[4] +
-        '</td><td>'
-        + price +
-        '</td><td>'
-        + status +
-        '</td><td>'
-        + admin +
-        '</td><td>'
-        + job[8] +
-        '</td><td>'
-        + job[7] +
-        '</td><td><button type="button" class="btn btn-default btn-pay" data-value="{' + price + '}" onclick="App.payJob(); return false;">Buy</button></td></tr>');
 
       }).catch(function(err) {
         console.error(err.message);
+        App.loading = false;
       });
 
 
      },
 
+     displayUnpaidAdminJob: function(id, name, client, description, quoteNo, price, status, dateCreated) {
 
+       var ethPrice = web3.fromWei(price, "ether");
+
+
+       $('#jobsAdminTable').append('<tr><td>'
+       + name +
+       '</td><td>'
+       + client +
+       '</td><td>'
+       + description +
+       '</td><td>'
+       + quoteNo +
+       '</td><td>'
+       + ethPrice +
+       '</td><td>'
+       + dateCreated
+       );
+
+     },
+
+     displayUnpaidClientJobs: function(id, name, admin, description, quoteNo, price, dateCreated) {
+       var ethPrice = web3.fromWei(price, "ether");
+
+       $('#jobsClientTable').append('<tr><td>'
+       + name +
+       '</td><td>'
+       + admin +
+       '</td><td>'
+       + description +
+       '</td><td>'
+       + quoteNo +
+       '</td><td>'
+       + ethPrice +
+       '</td><td>'
+       + dateCreated +
+       '</td><td><button type="button" class="btn btn-default btn-pay" data-id="{' + id +'}" data-value="{' + ethPrice + '}" onclick="App.payJob(); return false;">Pay</button></td></tr>');
+
+     },
 
     addJob: function() {
         //get the details of the new job
@@ -203,21 +235,32 @@ App = {
       //block default events
       event.preventDefault();
 
+      //get id
+      var _jobId = $(event.target).data('id');
+
+
+
       //get the job price. event.target is the button clicked
       var _price = $(event.target).data('value');
 
       //remove all non-numeric chars
       _price = _price.replace(/[^0-9\.]+/g, "");
 
+      _jobId = _jobId.replace(/[^0-9\.]+/g, "");
+
       //parse to float
       _price = parseFloat(_price);
 
-      //het utc date
+      //parse to int
+      _jobId = parseFloat(_jobId);
+      console.log(_jobId);
+
+      //get utc date
       _date = $date.toUTCString();
 
       //call the payJob function
       App.contracts.ethAccounts.deployed().then(function(instance) {
-        return instance.payJob(_date, {
+        return instance.payJob(_jobId, _date, {
           //metadata for function
           from: App.account,
           value: web3.toWei(_price, "ether"),

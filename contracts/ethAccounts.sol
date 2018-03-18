@@ -4,7 +4,7 @@ contract ethAccounts {
 
     //job structure
     struct Job {
-        uint jobId;
+        uint256 jobId;
         address admin;
         address client;
         string name;
@@ -184,7 +184,7 @@ contract ethAccounts {
           require(job.paid != true);
 
           //check client paying is not the admin
-          require(msg.sender != job.admin);
+          //require(msg.sender != job.admin);
 
           //check the price
           require(msg.value == job.price);
