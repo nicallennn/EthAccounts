@@ -25,34 +25,41 @@
 
 <body>
 
-  <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse custom-nav">
+  <div class="container">
+  <nav class="navbar navbar-toggleable-md custom-nav">
+      <div class="EthAccounts">
+      <h4 class="logo-text">EthAccounts<h4>
+      </div>
 
       <div class="white-text">
-        <p id="account" class="account-deets pull-right"></p>
-        <p id="accountBalance" class="account-deets pull-left"></p>
+        <p id="account" class="account-deets pull-left"></p>
+        <div class="account-deets pull-right">
+          <p id="accountBalance" class="account-deets" ></p>
+          <p id="accountGbp" class="account-deets"></p>
+        </div>
 
-        <p id="accountGbp" class="account-deets pull-left"></p>
 
     </div>
   </nav>
+</div>
 
   <div class="container">
 
-    <!--
-    <button class="btn btn-default btn-lg pull-right" data-toggle="collapse" data-target="#events" aria-expanded="false" aria-controls="events">Events</button>
-  -->
+    <div class="row-md-12">
+      <div class="col-md-2 nav-bttn nav-col1" data-toggle="collapse" data-target="#jobs-list"> Jobs </div>
+      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#jobs-list"> Clients </div>
+      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#jobs-list"> Resources </div>
+      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#jobs-list"> History </div>
+      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#jobs-list"> Tax </div>
+      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#jobs-list"> Help </div>
 
 
-    <button class="btn btn-default btn-lg pull-right" data-toggle="modal" data-target="#newJob">New Job</button>
-
-    <div id="#events" class="collapse">
-    <ul id="#events" class="list-group"></ul>
     </div>
 
+    <!-- <button class="btn btn-default btn-lg pull-left" data-toggle="collapse" data-target="#jobs-list" aria-expanded="false" aria-controls="events">Jobs</button> -->
 
-
-    <div class="col-md-12" id="jobs-list">
-
+    <div class="col-md-12 collapse in" id="jobs-list">
+      <button class="btn btn-default  pull-right" data-toggle="modal" data-target="#newJob">New Job</button>
 
       <div id="jobsRow" class="row">
         <!-- JOBS LOAD HERE -->
@@ -64,24 +71,9 @@
   <div id="jobs" style="display: none;">
 
     <div class="row-lg-12">
-      <h2>Unpaid Admin Jobs</h2>
+      <h2>Unpaid Jobs</h2>
 
-      <!--
-      <div class="panel panel-default panel-article">
-        <div class="panel-heading">
-          <h3 class="panel-title"></h3>
-        </div>
-        <div class="panel-body">
-          <strong>Client</strong>: <span class="jobs-client"></span><br/>
-          <strong>Job Description</strong>: <span class="jobs-description"></span><br/>
-          <strong>Quote No.</strong>: <span class="jobs-quote"></span><br/>
-          <strong>Price</strong>: <span class="jobs-price"></span><br/>
-          <strong>Status</strong>: <span class="jobs-status"></span><br/>
-          <strong>Admin</strong>: <span class="jobs-admin"></span><br/>
-        </div>
-      </div>
 
-    -->
     <table id="jobsAdminTable" class="table ">
       <thead>
         <tr>
@@ -99,13 +91,16 @@
     </table>
 
     <br>
-    <h2>Unpaid Client Jobs</h2>
+
+    <hr>
+    <br>
+    <h2>Jobs Awaiting Payment</h2>
     <table id="jobsClientTable" class="table">
       <thead>
         <tr>
           <th scope="col">Name</th>
           <th scope="col">Admin</th>
-          <th scope="col">Description (ETH)</th>
+          <th scope="col">Description</th>
           <th scope="col">Quote No.</th>
           <th scope="col">Price (ETH)</th>
           <th scope="col">Date Created</th>
@@ -177,10 +172,10 @@
     </div>
   </div>
 
-  <div id="footer" class="container">
-    <nav class="navbar navbar-default navbar-fixed-bottom">
-      <div class="navbar-inner navbar-content-center text-center">
-        <p class="text-muted" credit>EthAccounts</p>
+  <div class="container ">
+    <nav class="navbar custom-footer custom-radius row-md-12">
+      <div class="navbar-inner navbar-content-center text-center ">
+        <p class="footer-text">EthAccounts</p>
       </div>
     </nav>
   </div>

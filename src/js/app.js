@@ -48,7 +48,7 @@ App = {
              //get user balance
              if(err === null){
                //append balnace to dom
-               $('#accountBalance').text("Balance: " + web3.fromWei(balance, "ether").toFixed(4) + " ETH");
+               $('#accountBalance').text("Balance: E" + web3.fromWei(balance, "ether").toFixed(4) + " | ");
              }
              //convert the balance to gbp
              App.convertToGbp(web3.fromWei(balance, "ether"));
@@ -165,7 +165,7 @@ App = {
        $('#jobsAdminTable').append('<tr><td>'
        + name +
        '</td><td>'
-       + client +
+       + client.substring(0,8) + "..." +
        '</td><td>'
        + description +
        '</td><td>'
@@ -184,7 +184,7 @@ App = {
        $('#jobsClientTable').append('<tr><td>'
        + name +
        '</td><td>'
-       + admin +
+       + admin.substring(0,8) + "..." +
        '</td><td>'
        + description +
        '</td><td>'
