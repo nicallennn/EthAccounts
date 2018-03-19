@@ -1,6 +1,8 @@
 pragma solidity ^0.4.18;
 
-contract ethAccounts {
+import "./Employees.sol";
+
+contract ethAccounts is Employees {
 
     //job structure
     struct Job {
@@ -50,6 +52,12 @@ contract ethAccounts {
     //modifyer to allow only the stated client to pay for a job
     modifier onlyClient(uint _jobId) {
       require(msg.sender == jobs[_jobId].client);
+      _;
+    }
+
+    //modifyer, only allow admin of a job to pay an employee
+    modifier onlyAdmin(uint _employeeId) {
+      require(msg.sender == employees[_employeeId].admin);
       _;
     }
 
@@ -170,14 +178,14 @@ contract ethAccounts {
 
       //payJob function : pay for a job
       function payJob(uint _jobId, string _date) payable onlyClient(_jobId) public {
-          //check job has not already been paid
+          //check atleast one job exists
           require(jobCounter > 0);
 
           //check there is atleast one existing job
           require(_jobId > 0 && _jobId <= jobCounter);
 
 
-          //get the article from the mapping assos array -> store in contract state
+          //get the job from the mapping assos array -> store in contract state
           Job storage job = jobs[_jobId];
 
           //check the job has not already been Paid
