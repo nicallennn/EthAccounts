@@ -4,7 +4,8 @@ pragma solidity ^0.4.18;
 import "./Employees.sol";
 import "./Resources.sol";
 
-contract ethAccounts is Employees, Resources {
+
+contract ethAccounts is Employees, Resources{
 
     //job structure
     struct Job {
@@ -208,6 +209,38 @@ contract ethAccounts is Employees, Resources {
           LogPayJob(_jobId, job.client, job.admin, job.name, job.price, _date);
 
 
+
+      }
+
+      //calculate tax function
+      function calculateTotals() public view returns (uint256[]){
+
+        //output array -> in, due, out, owed
+        uint[] memory totals = new uint[](4);
+
+        //iterate jobs
+        for(uint i = 1; i <= jobCounter; i++) {
+          //if paid, and admin, add to total
+              if(jobs[i].admin == msg.sender) {
+                  if(jobs[i].paid ){
+                    totals[0] += jobs[i].price;
+                  }
+                  if(!jobs[i].paid){                                //change to else for optimisation, or continue ??? in above if
+                    totals[1] += jobs[i].price;
+                  }
+              }
+               else if(jobs[i].client == msg.sender) {
+                  if(jobs[i].paid){
+                    totals[2] += jobs[i].price;
+                  }
+                  if(!jobs[i].paid){
+                    totals[3] += jobs[i].price;
+                  }
+              }
+        }
+
+          //return totals array
+          return totals;
 
       }
 
