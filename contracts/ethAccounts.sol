@@ -1,8 +1,10 @@
 pragma solidity ^0.4.18;
 
+//import contracts to inherit
 import "./Employees.sol";
+import "./Resources.sol";
 
-contract ethAccounts is Employees {
+contract ethAccounts is Employees, Resources {
 
     //job structure
     struct Job {
@@ -55,11 +57,7 @@ contract ethAccounts is Employees {
       _;
     }
 
-    //modifyer, only allow admin of a job to pay an employee
-    modifier onlyAdmin(uint _employeeId) {
-      require(msg.sender == employees[_employeeId].admin);
-      _;
-    }
+
 
 
 
