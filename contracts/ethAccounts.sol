@@ -58,10 +58,6 @@ contract ethAccounts is Employees, Resources{
       _;
     }
 
-
-
-
-
     //addJob function : set details of the job
     function addJob(address _client, string _name, string _description, uint256 _quoteNo, uint256 _price, string _dateMade) public {
           //increment job counter
@@ -166,7 +162,6 @@ contract ethAccounts is Employees, Resources{
 
             // this line of code causes invalid opcode error
             sortedJobs[j] = jobIds[j];
-
         }
 
         //return sorted array
