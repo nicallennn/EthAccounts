@@ -3,9 +3,10 @@ pragma solidity ^0.4.18;
 //import contracts to inherit
 import "./Employees.sol";
 import "./Resources.sol";
+import "./Tax.sol";
 
 
-contract ethAccounts is Employees, Resources{
+contract ethAccounts is Employees, Resources, Tax{
 
     //job structure
     struct Job {
