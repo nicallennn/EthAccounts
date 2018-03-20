@@ -160,8 +160,6 @@ contract ethAccounts is Employees, Resources, Tax{
 
         //copy jobIds array to new can pay array
         for(uint j = 0; j < paid; j++) {
-
-            // this line of code causes invalid opcode error
             sortedJobs[j] = jobIds[j];
         }
 
@@ -179,7 +177,6 @@ contract ethAccounts is Employees, Resources, Tax{
           //check there is atleast one existing job
           require(_jobId > 0 && _jobId <= jobCounter);
 
-
           //get the job from the mapping assos array -> store in contract state
           Job storage job = jobs[_jobId];
 
@@ -192,19 +189,17 @@ contract ethAccounts is Employees, Resources, Tax{
           //check the price
           require(msg.value == job.price);
 
-          //store payment date
-          job.datePaid = _date;
-
           //handle payment
           job.admin.transfer(msg.value);
+
+          //store payment date
+          job.datePaid = _date;
 
           //set status to Paid
           job.paid = true;
 
           //trigger event
           LogPayJob(_jobId, job.client, job.admin, job.name, job.price, _date);
-
-
 
       }
 
@@ -221,7 +216,7 @@ contract ethAccounts is Employees, Resources, Tax{
                   if(jobs[i].paid ){
                     totals[0] += jobs[i].price;
                   }
-                  if(!jobs[i].paid){                                //change to else for optimisation, or continue ??? in above if
+                  if(!jobs[i].paid){                                                       //change to else for optimisation, or continue ??? in above if
                     totals[1] += jobs[i].price;
                   }
               }
