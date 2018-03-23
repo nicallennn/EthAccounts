@@ -280,7 +280,6 @@ App = {
     },
 
 
-
     /************************* EMPLOYEE FUNCTIONS *************************/
 
     reloadEmployees: function() {
@@ -861,7 +860,60 @@ App = {
 
     /************************* TAX FUNCTIONS *************************/
 
+    displayTaxPayment: function(address, period, date, total) {
+      var ethTotal = web3.fromWei(total, "ether");
 
+      $('#taxTable').append('<tr><td>'
+      + address.substring(0,8) + "..." +
+      '</td><td>'
+      + period +
+      '</td><td>'
+      + date +
+      '</td><td>'
+      + ethTotal +
+      '</td>');
+    },
+
+    makeTaxPayment: function() {
+      //block default events
+      event.preventDefault();
+
+      var _tax_address = $('#tax_address').val();
+      var _tax_period = $('#tax_period').val();
+      var _tax_total = web3.toWei(parseFloat($('#tax_total').val() || 0));
+
+      //remove all non-numeric chars
+      _tax_total = _tax_total.replace(/[^0-9\.]+/g, "");
+
+      //parse to float
+      _tax_total = parseFloat(_tax_total);
+
+      //get utc date
+      _date = $date.toUTCString();
+
+      //call the payJob function
+      App.contracts.ethAccounts.deployed().then(function(instance) {
+        return instance.payTax(_tax_address, _tax_period, _date, _tax_total, {
+          //metadata for function
+          from: App.account,
+          value: _tax_total,
+          gas: 600000
+        }).then(function(result) {
+
+          //catch any errors
+        }).catch(function(err) {
+          //log errors
+          console.error(err);
+        });
+      });
+    },
+
+    calculateTax: function(totalBeforeExpenses) {
+      //get the expenses total
+
+      //subtract from
+
+    },
     /* REFRESH METHOD */
     refreshFrontend: function() {
       //check reentry
@@ -1032,13 +1084,46 @@ App = {
         $('#totalsDue').html("Total Due: " + totals[1]);
         $('#totalsOwed').html("Total Owed: " + totals[3]);
 
-        App.loading = false;
+
         var history = $('#history');
         $('#historyRow').append(history.html());
 
+        /********* TAX **********/
+
+        return ethAccountsInstance.getTaxPayments();
+      }).then(function(paymentIds) {
+
+        //iterate over jobIds array
+        for(var i = 0; i < paymentIds.length; i++){
+          var payId = paymentIds[i];
+          ethAccountsInstance.taxMadePayments(payId.toNumber()).then(function(payment) {
+            App.displayTaxPayment(payment[2], payment[3], payment[4], payment[5]);           /////////////////////////
+          });
+        }
+
+        //get total payments in
+        return ethAccountsInstance.calculateTotals();
+        }).then(function(totals) {
+
+        //iterate over jobIds array
+        for(var i = 0; i < totals.length; i++){
+          totals[i] = web3.fromWei(totals[i], "ether");
+        }
+
+        //set tax calculations
+        $('#taxBefore').html("Tax Before Expenses: " + totals[0] * 0.2);
+        $('#taxExpenses').html("Expenses: " + totals[4]);
+        $('#taxAfter').html("Tax Due: " + ((totals[0] * 0.2) - totals[4]));
+
+        App.loading = false;
+
+        //append to tax row
+        var tax = $('#tax');
+        $('#taxRow').append(tax.html());
 
 
-      }).catch(function(err) {
+
+        }).catch(function(err) {
         console.error(err.message);
         App.loading = false;
       });

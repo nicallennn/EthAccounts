@@ -91,10 +91,18 @@
       </div>
     </div>
 
-    <div class="col-md-12 collapse in" id="history-list">
+    <div class="col-md-12 collapse" id="history-list">
 
       <div id="historyRow" class="row">
         <!-- HISTORY LOADS HERE -->
+      </div>
+    </div>
+
+    <div class="col-md-12 collapse in" id="tax-list">
+      <button class="btn btn-default pull-right" data-toggle="modal" data-target="#payTax">Make Tax Payment</button>
+
+      <div id="taxRow" class="row">
+        <!-- TAX LOADS HERE -->
       </div>
     </div>
 
@@ -329,6 +337,40 @@
       </tbody>
     </table>
 
+
+    </div>
+  </div>
+
+  <!-- TAX -->
+  <div id="tax" style="display: none;">
+
+    <div class="row-lg-12">
+        <h2>Tax Calculations: </h2>
+        <h3 id="taxBefore">Tax Before Expenses: </h3>
+        <h3 id="taxExpenses">Expenses: </h3>
+        <h3 id="taxAfter">Tax Due: </h3>
+
+    </div>
+    <br>
+    <hr>
+    <br>
+
+
+    <div class="row-lg-12">
+      <h2>Tax Payment History</h2>
+    <table id="taxTable" class="table ">
+      <thead>
+        <tr>
+          <th scope="col">Tax Address</th>
+          <th scope="col">Period</th>
+          <th scope="col">Date</th>
+          <th scope="col">Total Paid</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
 
     </div>
   </div>
@@ -611,6 +653,51 @@
 
           </div>
         </div>
+
+        <!-- PAY TAX MODAL -->
+          <!-- Modal form to add an employee -->
+          <div class="modal fade" id="payTax" role="dialog">
+            <div class="modal-dialog">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Make a Tax Payment</h4>
+                </div>
+                <div class="modal-body">
+
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <form>
+                        <!-- employer address -->
+                        <div class="form-group">
+                          <label for="tax_address">Employer Address</label>
+                          <input type="text" class="form-control" id="tax_address" placeholder="Enter the tax address">
+                        </div>
+                        <!-- period -->
+                        <div class="form-group">
+                          <label for="tax_period">Period</label>
+                          <input type="text" class="form-control" id="tax_period" placeholder="Enter the tax period">
+                        </div>
+
+                        <!-- total -->
+                        <div class="form-group">
+                          <label for="tax_total">Tax Total (ETH)</label>
+                          <input type="number" class="form-control" id="tax_total" placeholder="1" pattern="[0-9]+([\.,][0-9]+)?" step="0.01">
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary btn-info" data-dismiss="modal" onclick="App.makeTaxPayment(); return false;">Pay</button>
+                  <button type="button" class="btn" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
 
   <div class="container ">
     <nav class="navbar custom-footer custom-radius row-md-12">

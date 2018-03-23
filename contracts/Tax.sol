@@ -98,4 +98,6 @@ contract Tax {
       //return the total tax paid
       return totalPaidTax;
     }
+
+    
 }

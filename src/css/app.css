@@ -122,3 +122,11 @@ h3{
   padding-left: 50px;
   padding-right: 50px;
 }
+
+#tax-list{
+  margin-top: 0px;
+  background-color: white;
+  padding: 30px;
+  padding-left: 50px;
+  padding-right: 50px;
+}

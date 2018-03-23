@@ -177,8 +177,9 @@ app.getTotalExpenses()
 
 ********************************************************************************
 
+* TAX *
 
-
+app.payTax('0xf17f52151EbEF6C7334FAD080c5704D77216b732', "17/18", "1/1/1", web3.toWei(5,"ether"), {from:web3.eth.accounts[0], value:web3.toWei(5,"ether")} )
 
 
 
