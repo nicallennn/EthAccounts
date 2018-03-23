@@ -89,12 +89,12 @@ App = {
             //add event eventListener
             App.eventListener();
 
-            App.reloadJobs();
-            App.reloadEmployees();
-            App.reloadResources();
-            App.reloadExpenses();
+            // App.reloadJobs();
+            // App.reloadEmployees();
+            // App.reloadResources();
+            // App.reloadExpenses();
             //retrieve job from contract
-            //return App.refreshFrontend();
+            return App.refreshFrontend();
 
           });
      },
@@ -609,7 +609,7 @@ App = {
        //store instance of contract
        var ethAccountsInstance;
 
-       $('#expensesRow').empty();
+
 
        App.contracts.ethAccounts.deployed().then(function(instance) {
          //store contact instance
@@ -618,6 +618,7 @@ App = {
         return ethAccountsInstance.getAdminExpenses();
       }).then(function(expenseIds){
         //clear the job fromWei
+        $('#expensesRow').empty();
 
         //iterate over jobIds array
         for(var i = 0; i < expenseIds.length; i++){
@@ -818,15 +819,229 @@ App = {
 
     /************************* HISTORY FUNCTIONS *************************/
 
+    displayPaidAdminJob: function(id, name, client, description, quoteNo, price, datePaid) {
+
+      var ethPrice = web3.fromWei(price, "ether");
+
+      //append the data
+      $('#adminHistoryTable').append('<tr><td>'
+      + name +
+      '</td><td>'
+      + client.substring(0,8) + "..." +
+      '</td><td>'
+      + description +
+      '</td><td>'
+      + quoteNo +
+      '</td><td>'
+      + ethPrice +
+      '</td><td>'
+      + datePaid
+      );
+
+    },
+
+    displayPaidClientJobs: function(id, name, admin, description, quoteNo, price, datePaid) {
+      var ethPrice = web3.fromWei(price, "ether");
+
+      $('#clientHistoryTable').append('<tr><td>'
+      + name +
+      '</td><td>'
+      + admin.substring(0,8) + "..." +
+      '</td><td>'
+      + description +
+      '</td><td>'
+      + quoteNo +
+      '</td><td>'
+      + ethPrice +
+      '</td><td>'
+      + datePaid +
+      '</td>');
+
+    },
+
     /************************* TAX FUNCTIONS *************************/
 
 
     /* REFRESH METHOD */
     refreshFrontend: function() {
-      App.reloadJobs();
-      App.reloadEmployees();
-      App.reloadResources();
-      App.reloadExpenses();
+      //check reentry
+      if(App.loading) {
+        return;
+      }
+      App.loading = true;
+
+       //refresh account info
+       App.displayAccountInfo();
+
+       //store instance of contract
+       var ethAccountsInstance;
+
+       // //get the job placeholder
+       // $('#jobsRow').empty();
+
+       App.contracts.ethAccounts.deployed().then(function(instance) {
+         //store contact instance
+         ethAccountsInstance = instance;
+         //get unpaid jobs
+        return ethAccountsInstance.getUnpaidJobs(true);
+      }).then(function(jobIds){
+        //clear the job fromWei
+        $('#jobsRow').empty();
+
+        //iterate over jobIds array
+        for(var i = 0; i < jobIds.length; i++){
+          var jobId = jobIds[i];
+          ethAccountsInstance.jobs(jobId.toNumber()).then(function(job) {
+            App.displayUnpaidAdminJob(job[0], job[3], job[2], job[4], job[5], job[6], job[7], job[8] );           /////////////////////////
+          });
+
+        }
+
+        return ethAccountsInstance.getUnpaidJobs(false);
+      }).then(function(jobIds) {
+
+        //iterate over jobIds array
+        for(var i = 0; i < jobIds.length; i++){
+          var jobId = jobIds[i];
+          ethAccountsInstance.jobs(jobId.toNumber()).then(function(job) {
+            App.displayUnpaidClientJobs(job[0], job[3], job[1], job[4], job[5], job[6], job[8]);           /////////////////////////
+          });
+        }
+
+
+        var jobs = $('#jobs');
+        $('#jobsRow').append(jobs.html());
+
+        return ethAccountsInstance.getMyEmployees();
+        }).then(function(employeeIds){
+        //clear the job fromWei
+        $('#employeesRow').empty();
+
+        //iterate over jobIds array
+        for(var i = 0; i < employeeIds.length; i++){
+          var empId = employeeIds[i];
+          ethAccountsInstance.employees(empId.toNumber()).then(function(employee) {
+            App.displayEmployee(employee[0], employee[3], employee[6], employee[7], employee[4], employee[5]);           /////////////////////////
+          });
+
+        }
+
+
+        var emps = $('#employees');
+        $('#employeesRow').append(emps.html());
+
+        return ethAccountsInstance.getResources(false);
+      }).then(function(resourceIds){
+        //clear the job fromWei
+        $('#resourcesRow').empty();
+
+        //iterate over jobIds array
+        for(var i = 0; i < resourceIds.length; i++){
+          var rscId = resourceIds[i];
+          ethAccountsInstance.resources(rscId.toNumber()).then(function(resource) {
+            App.displayUnpaidResource(resource[0], resource[3], resource[2], resource[4], resource[5], resource[6], resource[8]);           /////////////////////////
+          });
+
+        }
+
+        return ethAccountsInstance.getResources(true);
+      }).then(function(resourceIds) {
+
+        //iterate over jobIds array
+        for(var i = 0; i < resourceIds.length; i++){
+          var rscId = resourceIds[i];
+          ethAccountsInstance.resources(rscId.toNumber()).then(function(resource) {
+            App.displayPaidResource(resource[0], resource[3], resource[2], resource[4], resource[5], resource[6], resource[9]);           /////////////////////////
+          });
+
+        }
+
+
+        var resources = $('#resources');
+        $('#resourcesRow').append(resources.html());
+
+
+        return ethAccountsInstance.getAdminExpenses();
+      }).then(function(expenseIds){
+        //clear the job fromWei
+        $('#expensesRow').empty();
+
+        //iterate over jobIds array
+        for(var i = 0; i < expenseIds.length; i++){
+          var expId = expenseIds[i];
+          ethAccountsInstance.adminExpenses(expId.toNumber()).then(function(expense) {
+            App.displayAdminExpense(expense[0], expense[2], expense[3], expense[4], expense[5]);
+          });
+
+        }
+
+        return ethAccountsInstance.getEmployeeExpenses(false);
+      }).then(function(expenseIds) {
+
+        //iterate over jobIds array
+        for(var i = 0; i < expenseIds.length; i++){
+          var expId = expenseIds[i];
+          ethAccountsInstance.employeeExpenses(expId.toNumber()).then(function(expense) {
+            App.displayEmployeeExpense(expense[0], expense[3], expense[4], expense[5], expense[6]);           /////////////////////////
+          });
+
+        }
+
+        var expenses = $('#expenses');
+        $('#expensesRow').append(expenses.html());
+
+        /* HISTORY */
+        return ethAccountsInstance.getPaidJobs(true);
+      }).then(function(jobIds){
+        //clear the row
+        $('#historyRow').empty();
+
+        //iterate over jobIds array
+        for(var i = 0; i < jobIds.length; i++){
+          var jobId = jobIds[i];
+          ethAccountsInstance.jobs(jobId.toNumber()).then(function(job) {
+            App.displayPaidAdminJob(job[0], job[3], job[2], job[4], job[5], job[6], job[9]);           /////////////////////////
+          });
+
+        }
+
+        //display paid jobs
+        return ethAccountsInstance.getPaidJobs(false);
+      }).then(function(jobIds) {
+
+        //iterate over jobIds array
+        for(var i = 0; i < jobIds.length; i++){
+          var jobId = jobIds[i];
+          ethAccountsInstance.jobs(jobId.toNumber()).then(function(job) {
+            App.displayPaidClientJobs(job[0], job[3], job[1], job[4], job[5], job[6], job[9]);           /////////////////////////
+          });
+        }
+
+
+        return ethAccountsInstance.calculateTotals();
+      }).then(function(totals) {
+
+
+        //iterate over jobIds array
+        for(var i = 0; i < totals.length; i++){
+          totals[i] = web3.fromWei(totals[i], "ether");
+        }
+
+        $('#totalsIn').html("Total In: " + totals[0]);
+        $('#totalsOut').html("Total Out: " + totals[2]);
+        $('#totalsDue').html("Total Due: " + totals[1]);
+        $('#totalsOwed').html("Total Owed: " + totals[3]);
+
+        App.loading = false;
+        var history = $('#history');
+        $('#historyRow').append(history.html());
+
+
+
+      }).catch(function(err) {
+        console.error(err.message);
+        App.loading = false;
+      });
     },
 /***********                   **************                   ************/
 
@@ -837,50 +1052,50 @@ App = {
 
           //JOB EVENTS
           instance.LogAddJob({}, {}).watch(function(error, event) {
-            App.reloadJobs();
+            App.refreshFrontend();
           });
 
           instance.LogPayJob({}, {}).watch(function(error, event) {
 
-            App.reloadJobs();
+            App.refreshFrontend();
           });
 
           //EMPLOYEE EVENTS
           instance.LogAddEmployee({}, {}).watch(function(error, event) {
 
-            App.reloadEmployees();
+            App.refreshFrontend();
           });
           instance.LogPayEmployee({}, {}).watch(function(error, event) {
 
-            App.reloadEmployees();
+            App.refreshFrontend();
           });
 
           //RESOURCE EVENTS
           instance.LogAddResource({}, {}).watch(function(error, event) {
 
-            App.reloadResources();
+            App.refreshFrontend();
           });
           instance.LogPayResource({}, {}).watch(function(error, event) {
 
-            App.reloadResources();
+            App.refreshFrontend();
           });
 
           //EXPENSE EVENTS
           instance.LogAddAdminExpense({}, {}).watch(function(error, event) {
 
-            App.reloadExpenses();
+            App.refreshFrontend();
           });
           instance.LogEmployeeExpense({}, {}).watch(function(error, event) {
 
-            App.reloadExpenses();
+            App.refreshFrontend();
           });
           instance.LogPayExpense({}, {}).watch(function(error, event) {
 
-            App.reloadExpenses();
+            App.refreshFrontend();
           });
           instance.LogDenyEmployeeExpense({}, {}).watch(function(error, event) {
 
-            App.reloadExpenses();
+            App.refreshFrontend();
           });
 
         });

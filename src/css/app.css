@@ -8,6 +8,11 @@ h2{
   font-size: 16px;
 }
 
+h3{
+
+  font-size: 14px;
+}
+
 .account-deets{
   font-size: 16px;
   display: inline;
@@ -103,6 +108,14 @@ h2{
 }
 
 #expenses-list{
+  margin-top: 0px;
+  background-color: white;
+  padding: 30px;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+#history-list{
   margin-top: 0px;
   background-color: white;
   padding: 30px;

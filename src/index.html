@@ -50,7 +50,7 @@
       <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#employees-list"> Employees </div>
       <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#resources-list"> Resources </div>
       <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#expenses-list"> Expenses </div>
-      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#history-list"> History </div>
+      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#history-list"> Accounts </div>
       <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#tax-list"> Tax </div>
 
 
@@ -78,16 +78,23 @@
       <button class="btn btn-default pull-right" data-toggle="modal" data-target="#newResource">New Resource</button>
 
       <div id="resourcesRow" class="row">
-        <!-- EMPLOYEES LOAD HERE -->
+        <!-- RESOURCES LOAD HERE -->
       </div>
     </div>
 
-    <div class="col-md-12 collapse in" id="expenses-list">
+    <div class="col-md-12 collapse" id="expenses-list">
       <button class="btn btn-default pull-right" data-toggle="modal" data-target="#newAdminExpense">New Admin Expense</button>
       <button class="btn btn-default pull-right" data-toggle="modal" data-target="#newEmployeeExpense">New Employee Claim</button>
 
       <div id="expensesRow" class="row">
-        <!-- EMPLOYEES LOAD HERE -->
+        <!-- EXPENSES LOAD HERE -->
+      </div>
+    </div>
+
+    <div class="col-md-12 collapse in" id="history-list">
+
+      <div id="historyRow" class="row">
+        <!-- HISTORY LOADS HERE -->
       </div>
     </div>
 
@@ -254,6 +261,66 @@
           <th scope="col">Date Made</th>
           <th scope="col">Pay</th>
           <th scope="col">Deny</th>
+
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+
+
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="history" style="display: none;">
+
+    <div class="row-lg-12">
+        <h2>Account Totals: </h2>
+        <h3 id="totalsIn">Total In: </h3>
+        <h3 id="totalsOut">Total Out: </h3>
+        <h3 id="totalsDue">Total Due: </h3>
+        <h3 id="totalsOwed">Total Owed: </h3>
+
+    </div>
+    <br>
+    <hr>
+    <br>
+
+
+    <div class="row-lg-12">
+      <h2>Job History</h2>
+    <table id="adminHistoryTable" class="table ">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Client</th>
+          <th scope="col">Description</th>
+          <th scope="col">Quote #</th>
+          <th scope="col">Price (ETH)</th>
+          <th scope="col">Date Paid</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+
+    <br>
+
+    <hr>
+    <br>
+    <h2>Job Payment History</h2>
+    <table id="clientHistoryTable" class="table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Admin</th>
+          <th scope="col">Description</th>
+          <th scope="col">Quote #</th>
+          <th scope="col">Price (ETH)</th>
+          <th scope="col">Date Paid</th>
 
         </tr>
       </thead>
