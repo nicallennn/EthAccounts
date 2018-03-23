@@ -46,28 +46,37 @@
   <div class="container">
 
     <div class="row-md-12">
-      <div class="col-md-2 nav-bttn nav-col1" data-toggle="collapse" data-target="#jobs-list"> Jobs </div>
-      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#jobs-list"> Clients </div>
-      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#jobs-list"> Resources </div>
-      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#jobs-list"> History </div>
-      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#jobs-list"> Tax </div>
-      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#jobs-list"> Help </div>
+      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#jobs-list"> Jobs </div>
+      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#employees-list"> Employees </div>
+      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#resources-list"> Resources </div>
+      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#expenses-list"> Expenses </div>
+      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#history-list"> History </div>
+      <div class="col-md-2 nav-bttn" data-toggle="collapse" data-target="#tax-list"> Tax </div>
 
 
     </div>
 
     <!-- <button class="btn btn-default btn-lg pull-left" data-toggle="collapse" data-target="#jobs-list" aria-expanded="false" aria-controls="events">Jobs</button> -->
 
-    <div class="col-md-12 collapse in" id="jobs-list">
+    <div class="col-md-12 collapse" id="jobs-list">
       <button class="btn btn-default  pull-right" data-toggle="modal" data-target="#newJob">New Job</button>
 
       <div id="jobsRow" class="row">
         <!-- JOBS LOAD HERE -->
       </div>
     </div>
+
+    <div class="col-md-12 collapse in" id="employees-list">
+      <button class="btn btn-default pull-right" data-toggle="modal" data-target="#newEmployee">New Employee</button>
+
+      <div id="employeesRow" class="row">
+        <!-- EMPLOYEES LOAD HERE -->
+      </div>
+    </div>
+
   </div>
 
-
+  <!-- JOBS -->
   <div id="jobs" style="display: none;">
 
     <div class="row-lg-12">
@@ -117,7 +126,35 @@
     </div>
   </div>
 
-  <!-- Modal form to sell an article -->
+  <!-- EMPLOYEES -->
+  <div id="employees" style="display: none;">
+
+    <div class="row-lg-12">
+      <h2>Employees</h2>
+
+
+    <table id="employeeTable" class="table ">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Postal Address</th>
+          <th scope="col">Phone Number</th>
+          <th scope="col">Salary (ETH)</th>
+          <th scope="col">Last Paid</th>
+          <th scope="col">Pay</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+
+    </div>
+  </div>
+
+  <!-- MODALS -------------------------------------------------------->
+
+  <!-- Modal form to add a job -->
   <div class="modal fade" id="newJob" role="dialog">
     <div class="modal-dialog">
 
@@ -164,7 +201,62 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary btn-info" data-dismiss="modal" onclick="App.addJob(); return false;">Submit</button>
+          <button type="button" class="btn btn-primary btn-info" data-dismiss="modal" onclick="App.addJob(); return false;">Add</button>
+          <button type="button" class="btn" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- Modal form to add an employee -->
+  <div class="modal fade" id="newEmployee" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add a New Employee</h4>
+        </div>
+        <div class="modal-body">
+
+          <div class="row">
+            <div class="col-lg-12">
+              <form>
+                <!-- wallet address -->
+                <div class="form-group">
+                  <label for="emp_address">Employee Address</label>
+                  <input type="text" class="form-control" id="emp_address" placeholder="Enter the employee ETH address">
+                </div>
+                <!-- name -->
+                <div class="form-group">
+                  <label for="emp_name">Employee name</label>
+                  <input type="text" class="form-control" id="emp_name" placeholder="Enter the name of your job">
+                </div>
+
+                <!-- salary -->
+                <div class="form-group">
+                  <label for="emp_sal">Salary (ETH)</label>
+                  <input type="number" class="form-control" id="emp_sal" placeholder="1" pattern="[0-9]+([\.,][0-9]+)?" step="0.01">
+                </div>
+                <!-- postal-->
+                <div class="form-group">
+                  <label for="emp_post">Postal Address</label>
+                  <input type="text" class="form-control" id="emp_post" placeholder="Enter the employees postal address">
+                </div>
+                <!-- phone-->
+                <div class="form-group">
+                  <label for="emp_phone">Phone Number</label>
+                  <input type="text" class="form-control" id="emp_phone" placeholder="Enter the employees phone number">
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary btn-info" data-dismiss="modal" onclick="App.addEmployee(); return false;">Add</button>
           <button type="button" class="btn" data-dismiss="modal">Close</button>
         </div>
       </div>
