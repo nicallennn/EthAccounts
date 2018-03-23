@@ -90,6 +90,7 @@ App = {
             App.eventListener();
             App.reloadEmployees();
             App.reloadResources();
+            App.reloadExpenses();
             //retrieve job from contract
             return App.reloadJobs();
 
@@ -424,15 +425,12 @@ App = {
       }
       App.loading = true;
 
-      console.log("one");
        //refresh account info
        App.displayAccountInfo();
 
        //store instance of contract
        var ethAccountsInstance;
 
-       // //get the job placeholder
-        $('#resourcesRow').empty();
 
        App.contracts.ethAccounts.deployed().then(function(instance) {
          //store contact instance
@@ -594,6 +592,120 @@ App = {
       });
     },
 
+    /************************* EXPENSE FUNCTIONS *************************/
+
+    reloadExpenses: function() {
+      //check reentry
+      if(App.loading) {
+        return;
+        console.log("test");
+      }
+      App.loading = true;
+
+      console.log("one");
+       //refresh account info
+       App.displayAccountInfo();
+
+       //store instance of contract
+       var ethAccountsInstance;
+
+       $('#expensesRow').empty();
+
+       App.contracts.ethAccounts.deployed().then(function(instance) {
+         //store contact instance
+         ethAccountsInstance = instance;
+         //get unpaid jobs
+        return ethAccountsInstance.getAdminExpenses();
+      }).then(function(expenseIds){
+        //clear the job fromWei
+        console.log("two");
+
+        //iterate over jobIds array
+        for(var i = 0; i < expenseIds.length; i++){
+          var expId = expenseIds[i];
+          ethAccountsInstance.adminExpenses(expId.toNumber()).then(function(expense) {
+            App.displayAdminExpense(expense[0], expense[2], expense[3], expense[4], expense[5]);
+            console.log(expense[0], expense[2], expense[3], expense[4], expense[5]);
+          });
+
+        }
+
+        return ethAccountsInstance.getEmployeeExpenses(false);
+      }).then(function(expenseIds) {
+
+        //iterate over jobIds array
+        for(var i = 0; i < expenseIds.length; i++){
+          var expId = expenseIds[i];
+          ethAccountsInstance.employeeExpenses(expId.toNumber()).then(function(expense) {
+            App.displayEmployeeExpense(expense[0], expense[3], expense[4], expense[5], expense[6]);           /////////////////////////
+          });
+
+        }
+
+        console.log("three");
+
+        App.loading = false;
+        var expenses = $('#expenses');
+        $('#expensesRow').append(expenses.html());
+
+
+      }).catch(function(err) {
+        console.error(err.message);
+        App.loading = false;
+      });
+    },
+
+    displayAdminExpense: function(id, name, description, total, dateMade) {
+      var ethTotal = web3.fromWei(total, "ether");
+
+      $('#expensesTable').append('<tr><td>'
+      + name +
+      '</td><td>'
+      + description +
+      '</td><td>'
+      + ethTotal +
+      '</td><td>'
+      + dateMade +
+      '</td>');
+
+    },
+
+    displayEmployeeExpense: function(id, name, description, total, dueDate) {
+      var ethTotal = web3.fromWei(total, "ether");
+
+      $('#employeeExpensesTable').append('<tr><td>'
+      + name +
+      '</td><td>'
+      + description +
+      '</td><td>'
+      + ethTotal +
+      '</td><td>'
+      + dueDate +
+      '</td><td><button type="button" class="btn btn-default btn-pay" data-id="{' + id +'}" data-total="{' + ethTotal + '}" onclick="App.payEmployeeExpense(); return false;">Pay</button></td><td><button type="button" class="btn btn-default btn-pay" data-id="{' + id +'}" onclick="App.denyEmployeeExpense(); return false;">Deny</button></td></tr>');
+
+
+    },
+
+    addAdminExpense: function() {
+
+    },
+
+    addEmployeeExpense: function() {
+
+    },
+
+    payEmployeeExpense: function() {
+
+    },
+
+    denyEmployeeExpense: function() {
+
+    },
+
+    getTotalExpenses: function() {
+
+    },
+
     /************************* HISTORY FUNCTIONS *************************/
 
     /************************* TAX FUNCTIONS *************************/
@@ -634,6 +746,25 @@ App = {
 
             App.reloadResources();
           });
+
+          //EXPENSE EVENTS
+          instance.LogAddAdminExpense({}, {}).watch(function(error, event) {
+
+            App.reloadExpenses();
+          });
+          instance.LogEmployeeExpense({}, {}).watch(function(error, event) {
+
+            App.reloadExpenses();
+          });
+          instance.LogPayExpense({}, {}).watch(function(error, event) {
+
+            App.reloadExpenses();
+          });
+          instance.LogDenyEmployeeExpense({}, {}).watch(function(error, event) {
+
+            App.reloadExpenses();
+          });
+
         });
     }
 };

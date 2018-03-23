@@ -74,10 +74,19 @@
       </div>
     </div>
 
-    <div class="col-md-12 collapse in" id="resources-list">
+    <div class="col-md-12 collapse" id="resources-list">
       <button class="btn btn-default pull-right" data-toggle="modal" data-target="#newResource">New Resource</button>
 
       <div id="resourcesRow" class="row">
+        <!-- EMPLOYEES LOAD HERE -->
+      </div>
+    </div>
+
+    <div class="col-md-12 collapse in" id="expenses-list">
+      <button class="btn btn-default pull-right" data-toggle="modal" data-target="#newAdminExpense">New Admin Expense</button>
+      <button class="btn btn-default pull-right" data-toggle="modal" data-target="#newEmployeeExpense">New Employee Claim</button>
+
+      <div id="expensesRow" class="row">
         <!-- EMPLOYEES LOAD HERE -->
       </div>
     </div>
@@ -198,6 +207,53 @@
           <th scope="col">Total (ETH)</th>
           <th scope="col">PO#</th>
           <th scope="col">Date Paid</th>
+
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+
+
+    </div>
+  </div>
+
+  <!-- EXPENSES -->
+  <div id="expenses" style="display: none;">
+
+    <div class="row-lg-12">
+      <h2>Expenses</h2>
+
+
+    <table id="expensesTable" class="table ">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Total (ETH)</th>
+          <th scope="col">Date Made</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+
+    <br>
+
+    <hr>
+    <br>
+    <h2>Employee Expenses</h2>
+    <table id="employeeExpensesTable" class="table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Total (ETH)</th>
+          <th scope="col">Date Made</th>
+          <th scope="col">Pay</th>
+          <th scope="col">Deny</th>
 
         </tr>
       </thead>

@@ -36,6 +36,7 @@ var payResourceEvent = app.LogPayResource({},{}).watch(function(error, event){co
 //from account 0
 app.addJob('0xf17f52151EbEF6C7334FAD080c5704D77216b732', "Job 1", "desc 1", 101, web3.toWei(5, "ether"), "1/1/1", {from: web3.eth.accounts[0]})
 app.addJob('0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef', "Job 2", "desc 2", 102, web3.toWei(5, "ether"), "1/1/1", {from: web3.eth.accounts[0]})
+app.addJob('0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef', "Job 3", "desc 3", 103, web3.toWei(5, "ether"), "1/1/1", {from: web3.eth.accounts[0]})
 
 //from account 1
 app.addJob('0x627306090abaB3A6e1400e9345bC60c78a8BEf57', "Job 3", "desc 3", 51, web3.toWei(5, "ether"), "1/1/1", {from: web3.eth.accounts[1]})

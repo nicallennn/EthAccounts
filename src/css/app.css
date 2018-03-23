@@ -101,3 +101,11 @@ h2{
   padding-left: 50px;
   padding-right: 50px;
 }
+
+#expenses-list{
+  margin-top: 0px;
+  background-color: white;
+  padding: 30px;
+  padding-left: 50px;
+  padding-right: 50px;
+}
