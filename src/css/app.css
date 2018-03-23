@@ -93,3 +93,11 @@ h2{
   padding-left: 50px;
   padding-right: 50px;
 }
+
+#resources-list{
+  margin-top: 0px;
+  background-color: white;
+  padding: 30px;
+  padding-left: 50px;
+  padding-right: 50px;
+}

@@ -66,10 +66,18 @@
       </div>
     </div>
 
-    <div class="col-md-12 collapse in" id="employees-list">
+    <div class="col-md-12 collapse" id="employees-list">
       <button class="btn btn-default pull-right" data-toggle="modal" data-target="#newEmployee">New Employee</button>
 
       <div id="employeesRow" class="row">
+        <!-- EMPLOYEES LOAD HERE -->
+      </div>
+    </div>
+
+    <div class="col-md-12 collapse in" id="resources-list">
+      <button class="btn btn-default pull-right" data-toggle="modal" data-target="#newResource">New Resource</button>
+
+      <div id="resourcesRow" class="row">
         <!-- EMPLOYEES LOAD HERE -->
       </div>
     </div>
@@ -89,7 +97,7 @@
           <th scope="col">Name</th>
           <th scope="col">Client</th>
           <th scope="col">Description</th>
-          <th scope="col">Quote No.</th>
+          <th scope="col">Quote #</th>
           <th scope="col">Price (ETH)</th>
           <th scope="col">Date Created</th>
         </tr>
@@ -110,7 +118,7 @@
           <th scope="col">Name</th>
           <th scope="col">Admin</th>
           <th scope="col">Description</th>
-          <th scope="col">Quote No.</th>
+          <th scope="col">Quote #</th>
           <th scope="col">Price (ETH)</th>
           <th scope="col">Date Created</th>
 
@@ -152,8 +160,59 @@
     </div>
   </div>
 
+  <!-- RESOURCES -->
+  <div id="resources" style="display: none;">
+
+    <div class="row-lg-12">
+      <h2>Unpaid Resources</h2>
+
+
+    <table id="unpaidResourcesTable" class="table ">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Resource Address</th>
+          <th scope="col">Description</th>
+          <th scope="col">Total (ETH)</th>
+          <th scope="col">PO#</th>
+          <th scope="col">Date Due</th>
+          <th scope="col">Pay</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+
+    <br>
+
+    <hr>
+    <br>
+    <h2>Paid Resources</h2>
+    <table id="paidResourcesTable" class="table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Resource Address</th>
+          <th scope="col">Description</th>
+          <th scope="col">Total (ETH)</th>
+          <th scope="col">PO#</th>
+          <th scope="col">Date Paid</th>
+
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+
+
+    </div>
+  </div>
+
   <!-- MODALS -------------------------------------------------------->
 
+<!-- JOB MODAL -->
   <!-- Modal form to add a job -->
   <div class="modal fade" id="newJob" role="dialog">
     <div class="modal-dialog">
@@ -176,7 +235,7 @@
                 </div>
                 <!-- name -->
                 <div class="form-group">
-                  <label for="jobs_name">Job name</label>
+                  <label for="jobs_name">Job Name</label>
                   <input type="text" class="form-control" id="jobs_name" placeholder="Enter the name of your job">
                 </div>
 
@@ -210,6 +269,7 @@
   </div>
 
 
+<!-- EMPLOYEE MODAL -->
   <!-- Modal form to add an employee -->
   <div class="modal fade" id="newEmployee" role="dialog">
     <div class="modal-dialog">
@@ -232,7 +292,7 @@
                 </div>
                 <!-- name -->
                 <div class="form-group">
-                  <label for="emp_name">Employee name</label>
+                  <label for="emp_name">Employee Name</label>
                   <input type="text" class="form-control" id="emp_name" placeholder="Enter the name of your job">
                 </div>
 
@@ -263,6 +323,76 @@
 
     </div>
   </div>
+
+  <!-- RESOURCE MODAL -->
+    <!-- Modal form to add an employee -->
+    <div class="modal fade" id="newResource" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Add a New Resource</h4>
+          </div>
+          <div class="modal-body">
+
+            <div class="row">
+              <div class="col-lg-12">
+                <form>
+                  <!-- resource address -->
+                  <div class="form-group">
+                    <label for="rsc_address">Resource Address</label>
+                    <input type="text" class="form-control" id="rsc_address" placeholder="Enter the resource ETH address">
+                  </div>
+                  <!-- name -->
+                  <div class="form-group">
+                    <label for="rsc_name">Resource Name</label>
+                    <input type="text" class="form-control" id="rsc_name" placeholder="Enter the name of the resource">
+                  </div>
+                  <!-- description -->
+                  <div class="form-group">
+                    <label for="rsc_description">Description</label>
+                    <textarea type="text" class="form-control vresize" id="rsc_description" placeholder="Add a resource description" maxlength="255"></textarea>
+                  </div>
+
+                  <!-- total -->
+                  <div class="form-group">
+                    <label for="rsc_total">Total (ETH)</label>
+                    <input type="number" class="form-control" id="rsc_total" placeholder="1" pattern="[0-9]+([\.,][0-9]+)?" step="0.01">
+                  </div>
+                  <!-- poNumber-->
+                  <div class="form-group">
+                    <label for="rsc_po">PO #</label>
+                    <input type="number" class="form-control" id="rsc_po"  placeholder="1" pattern="[0-9]+([\.,][0-9]+)?" step="0.01">
+                  </div>
+                  <!-- date due -->
+                  <div class="form-group">
+                    <label for="rsc_dateDue">Date Due</label>
+                    <input type="text" class="form-control" id="rsc_dateDue" placeholder="Enter the payment due date">
+                  </div>
+                  <br>
+                  <!-- expense-->
+                  <div class="form-group">
+                    <label for="rsc_expense">Is this resource an expense?</label>
+                    <select id="rsc_expense" name="rsc_expense">
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </select>
+                  </div>
+
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-info" data-dismiss="modal" onclick="App.addResource(); return false;">Add</button>
+            <button type="button" class="btn" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
 
   <div class="container ">
     <nav class="navbar custom-footer custom-radius row-md-12">

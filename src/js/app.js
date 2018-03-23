@@ -89,6 +89,7 @@ App = {
             //add event eventListener
             App.eventListener();
             App.reloadEmployees();
+            App.reloadResources();
             //retrieve job from contract
             return App.reloadJobs();
 
@@ -416,7 +417,183 @@ App = {
 
     /************************* RESOURCE FUNCTIONS *************************/
 
-    
+    reloadResources: function(){
+      //check reentry
+      if(App.loading) {
+        return;
+      }
+      App.loading = true;
+
+      console.log("one");
+       //refresh account info
+       App.displayAccountInfo();
+
+       //store instance of contract
+       var ethAccountsInstance;
+
+       // //get the job placeholder
+        $('#resourcesRow').empty();
+
+       App.contracts.ethAccounts.deployed().then(function(instance) {
+         //store contact instance
+         ethAccountsInstance = instance;
+         //get unpaid jobs
+        return ethAccountsInstance.getResources(false);
+      }).then(function(resourceIds){
+        //clear the job fromWei
+        $('#resourcesRow').empty();
+
+        //iterate over jobIds array
+        for(var i = 0; i < resourceIds.length; i++){
+          var rscId = resourceIds[i];
+          ethAccountsInstance.resources(rscId.toNumber()).then(function(resource) {
+            App.displayUnpaidResource(resource[0], resource[3], resource[2], resource[4], resource[5], resource[6], resource[8]);           /////////////////////////
+          });
+
+        }
+
+        return ethAccountsInstance.getResources(true);
+      }).then(function(resourceIds) {
+
+        //iterate over jobIds array
+        for(var i = 0; i < resourceIds.length; i++){
+          var rscId = resourceIds[i];
+          ethAccountsInstance.resources(rscId.toNumber()).then(function(resource) {
+            App.displayPaidResource(resource[0], resource[3], resource[2], resource[4], resource[5], resource[6], resource[9]);           /////////////////////////
+          });
+
+        }
+
+        App.loading = false;
+        var resources = $('#resources');
+        $('#resourcesRow').append(resources.html());
+
+
+      }).catch(function(err) {
+        console.error(err.message);
+        App.loading = false;
+      });
+
+    },
+
+    displayUnpaidResource: function(id, name, rsc_address, description, total, po, dueDate ){
+      var ethTotal = web3.fromWei(total, "ether");
+
+      $('#unpaidResourcesTable').append('<tr><td>'
+      + name +
+      '</td><td>'
+      + rsc_address+
+      '</td><td>'
+      + description +
+      '</td><td>'
+      + ethTotal +
+      '</td><td>'
+      + po +
+      '</td><td>'
+      + dueDate +
+      '</td><td><button type="button" class="btn btn-default btn-pay" data-id="{' + id +'}" data-total="{' + ethTotal + '}" onclick="App.payResource(); return false;">Pay</button></td></tr>');
+
+    },
+
+    displayPaidResource: function(id, name, rsc_address, description, total, po, datePaid ){
+      var ethTotal = web3.fromWei(total, "ether");
+
+      $('#paidResourcesTable').append('<tr><td>'
+      + name +
+      '</td><td>'
+      + rsc_address+
+      '</td><td>'
+      + description +
+      '</td><td>'
+      + ethTotal +
+      '</td><td>'
+      + po +
+      '</td><td>'
+      + datePaid +
+      '</td>');
+
+    },
+
+    addResource: function(){
+      //get the details of the new resource
+      var _rsc_address = $('#rsc_address').val();
+      var _rsc_name = $('#rsc_name').val();
+      var _rsc_desc = $('#rsc_description').val();
+      var _rsc_total = web3.toWei(parseFloat($('#rsc_total').val() || 0));
+      var _rsc_po = $('#rsc_po').val();
+      var _rsc_dateDue = $('#rsc_dateDue').val();
+      var _rsc_expense = $('#rsc_expense option:selected').text();
+      var _datePaid = $date.toUTCString();
+
+      //set expense bool
+      if(_rsc_expense == "Yes"){
+        _rsc_expense = true;
+      }
+      else{
+        _rsc_expense = false;
+      }
+      //check for resource
+      if((_rsc_name.trim() == '') || (_rsc_total == 0)) {
+        //no new employee
+        return false;
+      }
+
+      //get instance of that contract and call addEmployee function
+      App.contracts.ethAccounts.deployed().then(function(instance) {
+        return instance.addResource(_rsc_address, _rsc_name, _rsc_desc, _rsc_total, _rsc_po, _rsc_dateDue, _rsc_expense, _datePaid, {
+          //metadata for function
+          from: App.account,
+          gas: 600000,
+        });
+      }).then(function(result) {
+
+        //catch any errors
+      }).catch(function(err) {
+        //log errors
+        console.error(err);
+      });
+    },
+
+    payResource: function(){
+      //block default events
+      event.preventDefault();
+
+      //get id
+      var _resourceId = $(event.target).data('id');
+
+      //get the job price. event.target is the button clicked
+      var _total = $(event.target).data('total');
+
+      //remove all non-numeric chars
+      _total = _total.replace(/[^0-9\.]+/g, "");
+      _resourceId = _resourceId.replace(/[^0-9\.]+/g, "");
+
+      //parse to float
+      _total = parseFloat(_total);
+
+      //parse to int
+      _resourceId = parseFloat(_resourceId);
+
+      //get utc date
+      _date = $date.toUTCString();
+
+      //call the payJob function
+      App.contracts.ethAccounts.deployed().then(function(instance) {
+        return instance.payResource(_resourceId, _date, {
+          //metadata for function
+          from: App.account,
+          value: web3.toWei(_total, "ether"),
+          gas: 600000
+        }).then(function(result) {
+
+          //catch any errors
+        }).catch(function(err) {
+          //log errors
+          console.error(err);
+        });
+      });
+    },
+
     /************************* HISTORY FUNCTIONS *************************/
 
     /************************* TAX FUNCTIONS *************************/
@@ -446,6 +623,16 @@ App = {
           instance.LogPayEmployee({}, {}).watch(function(error, event) {
 
             App.reloadEmployees();
+          });
+
+          //RESOURCE EVENTS
+          instance.LogAddResource({}, {}).watch(function(error, event) {
+
+            App.reloadResources();
+          });
+          instance.LogPayResource({}, {}).watch(function(error, event) {
+
+            App.reloadResources();
           });
         });
     }
