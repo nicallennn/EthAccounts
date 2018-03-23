@@ -88,11 +88,13 @@ App = {
 
             //add event eventListener
             App.eventListener();
+
+            App.reloadJobs();
             App.reloadEmployees();
             App.reloadResources();
             App.reloadExpenses();
             //retrieve job from contract
-            return App.reloadJobs();
+            //return App.refreshFrontend();
 
           });
      },
@@ -598,11 +600,9 @@ App = {
       //check reentry
       if(App.loading) {
         return;
-        console.log("test");
       }
       App.loading = true;
 
-      console.log("one");
        //refresh account info
        App.displayAccountInfo();
 
@@ -618,14 +618,12 @@ App = {
         return ethAccountsInstance.getAdminExpenses();
       }).then(function(expenseIds){
         //clear the job fromWei
-        console.log("two");
 
         //iterate over jobIds array
         for(var i = 0; i < expenseIds.length; i++){
           var expId = expenseIds[i];
           ethAccountsInstance.adminExpenses(expId.toNumber()).then(function(expense) {
             App.displayAdminExpense(expense[0], expense[2], expense[3], expense[4], expense[5]);
-            console.log(expense[0], expense[2], expense[3], expense[4], expense[5]);
           });
 
         }
@@ -641,8 +639,6 @@ App = {
           });
 
         }
-
-        console.log("three");
 
         App.loading = false;
         var expenses = $('#expenses');
@@ -687,19 +683,133 @@ App = {
     },
 
     addAdminExpense: function() {
+      //get the details of the new expense
+      var _exp_name = $('#adExp_name').val();
+      var _exp_desc = $('#adExp_description').val();
+      var _exp_total = web3.toWei(parseFloat($('#adExp_total').val() || 0));
+      var _dateMade = $date.toUTCString();
 
+      //check for jobs
+      if((_exp_name.trim() == '') || (_exp_total == 0)) {
+        //no new jobs
+        return false;
+      }
+
+      //get instance of that contract and call addJob function
+      App.contracts.ethAccounts.deployed().then(function (instance) {
+        return instance.addAdminExpense(_exp_name, _exp_desc, _exp_total, _dateMade, {
+          //metadata for function
+          from: App.account,
+          gas: 500000,
+        });
+      }).then(function(result) {
+
+        //catch any errors
+      }).catch(function(err) {
+        //log errors
+        console.error(err);
+      });
     },
 
     addEmployeeExpense: function() {
+      //get the details of the new expense
+      var _exp_employer = $('#adEmExp_employer').val();
+      var _exp_name = $('#adEmExp_name').val();
+      var _exp_desc = $('#adEmExp_description').val();
+      var _exp_total = web3.toWei(parseFloat($('#adEmExp_total').val() || 0));
+      var _dateMade = $date.toUTCString();
 
+      //check for jobs
+      if((_exp_name.trim() == '') || (_exp_total == 0)) {
+        //no new jobs
+        return false;
+      }
+
+      //get instance of that contract and call addJob function
+      App.contracts.ethAccounts.deployed().then(function (instance) {
+        return instance.claimEmployeeExpense(_exp_employer, _exp_name, _exp_desc, _exp_total, _dateMade, {
+          //metadata for function
+          from: App.account,
+          gas: 500000,
+        });
+      }).then(function(result) {
+
+        //catch any errors
+      }).catch(function(err) {
+        //log errors
+        console.error(err);
+      });
     },
 
     payEmployeeExpense: function() {
+      //block default events
+      event.preventDefault();
+
+      //get id
+      var _expenseId = $(event.target).data('id');
+
+      //get the job price. event.target is the button clicked
+      var _total = $(event.target).data('total');
+
+      //remove all non-numeric chars
+      _total = _total.replace(/[^0-9\.]+/g, "");
+      _expenseId = _expenseId.replace(/[^0-9\.]+/g, "");
+
+      //parse to float
+      _total = parseFloat(_total);
+
+      //parse to int
+      _expenseId = parseFloat(_expenseId);
+
+      //get utc date
+      _date = $date.toUTCString();
+
+      //call the payJob function
+      App.contracts.ethAccounts.deployed().then(function(instance) {
+        return instance.payEmployeeExpense(_expenseId, _date, {
+          //metadata for function
+          from: App.account,
+          value: web3.toWei(_total, "ether"),
+          gas: 600000
+        }).then(function(result) {
+
+          //catch any errors
+        }).catch(function(err) {
+          //log errors
+          console.error(err);
+        });
+      });
 
     },
 
     denyEmployeeExpense: function() {
+      //block default events
+      event.preventDefault();
 
+      //get id
+      var _expenseId = $(event.target).data('id');
+
+      //remove all non-numeric chars
+      _expenseId = _expenseId.replace(/[^0-9\.]+/g, "");
+
+      //parse to int
+      _expenseId = parseFloat(_expenseId);
+
+
+      //call the payJob function
+      App.contracts.ethAccounts.deployed().then(function(instance) {
+        return instance.denyEmployeeExpense(_expenseId, {
+          //metadata for function
+          from: App.account,
+          gas: 600000
+        }).then(function(result) {
+
+          //catch any errors
+        }).catch(function(err) {
+          //log errors
+          console.error(err);
+        });
+      });
     },
 
     getTotalExpenses: function() {
@@ -710,6 +820,14 @@ App = {
 
     /************************* TAX FUNCTIONS *************************/
 
+
+    /* REFRESH METHOD */
+    refreshFrontend: function() {
+      App.reloadJobs();
+      App.reloadEmployees();
+      App.reloadResources();
+      App.reloadExpenses();
+    },
 /***********                   **************                   ************/
 
     //EVENTS

@@ -450,6 +450,101 @@
       </div>
     </div>
 
+    <!-- ADMIN EXPENSE MODAL -->
+      <!-- Modal form to add an employee -->
+      <div class="modal fade" id="newAdminExpense" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Add a New Expense</h4>
+            </div>
+            <div class="modal-body">
+
+              <div class="row">
+                <div class="col-lg-12">
+                  <form>
+                    <!-- name -->
+                    <div class="form-group">
+                      <label for="adExp_name">Name</label>
+                      <input type="text" class="form-control" id="adExp_name" placeholder="Enter the name of the expense">
+                    </div>
+                    <!-- description -->
+                    <div class="form-group">
+                      <label for="adExp_description">Description</label>
+                      <textarea type="text" class="form-control vresize" id="adExp_description" placeholder="Add an expense description" maxlength="255"></textarea>
+                    </div>
+
+                    <!-- total -->
+                    <div class="form-group">
+                      <label for="adExp_total">Total (ETH)</label>
+                      <input type="number" class="form-control" id="adExp_total" placeholder="1" pattern="[0-9]+([\.,][0-9]+)?" step="0.01">
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary btn-info" data-dismiss="modal" onclick="App.addAdminExpense(); return false;">Add</button>
+              <button type="button" class="btn" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- EMPLOYEE EXPENSE MODAL -->
+        <!-- Modal form to add an employee -->
+        <div class="modal fade" id="newEmployeeExpense" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add a New Expense</h4>
+              </div>
+              <div class="modal-body">
+
+                <div class="row">
+                  <div class="col-lg-12">
+                    <form>
+                      <!-- employer address -->
+                      <div class="form-group">
+                        <label for="adEmExp_employer">Employer Address</label>
+                        <input type="text" class="form-control" id="adEmExp_employer" placeholder="Enter the employers address">
+                      </div>
+                      <!-- name -->
+                      <div class="form-group">
+                        <label for="adEmExp_name">Name</label>
+                        <input type="text" class="form-control" id="adEmExp_name" placeholder="Enter the name of the expense">
+                      </div>
+                      <!-- description -->
+                      <div class="form-group">
+                        <label for="adEmExp_description">Description</label>
+                        <textarea type="text" class="form-control vresize" id="adEmExp_description" placeholder="Add an expense description" maxlength="255"></textarea>
+                      </div>
+
+                      <!-- total -->
+                      <div class="form-group">
+                        <label for="adEmExp_total">Total (ETH)</label>
+                        <input type="number" class="form-control" id="adEmExp_total" placeholder="1" pattern="[0-9]+([\.,][0-9]+)?" step="0.01">
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-info" data-dismiss="modal" onclick="App.addEmployeeExpense(); return false;">Add</button>
+                <button type="button" class="btn" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
   <div class="container ">
     <nav class="navbar custom-footer custom-radius row-md-12">
       <div class="navbar-inner navbar-content-center text-center ">
