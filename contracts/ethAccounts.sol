@@ -53,7 +53,7 @@ contract ethAccounts is Employees, Resources, Tax{
         );
 
 
-    //modifyer to allow only the stated client to pay for a job
+    //modifier to allow only the stated client to pay for a job
     modifier onlyClient(uint _jobId) {
       require(msg.sender == jobs[_jobId].client);
       _;
@@ -129,7 +129,7 @@ contract ethAccounts is Employees, Resources, Tax{
 
     }
 
-    //get unpaid get unpaid job id's - > return array
+    //get unpaid job id's - > return array
     function getPaidJobs(bool adminOrClient) public view returns (uint[]) {
         //output array
         uint[] memory jobIds = new uint[](jobCounter);
@@ -216,7 +216,7 @@ contract ethAccounts is Employees, Resources, Tax{
                   if(jobs[i].paid ){
                     totals[0] += jobs[i].price;   //in
                   }
-                  if(!jobs[i].paid){                                                       //change to else for optimisation, or continue ??? in above if
+                  if(!jobs[i].paid){                                                      
                     totals[1] += jobs[i].price;   //due
                   }
               }
