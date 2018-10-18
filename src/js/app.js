@@ -89,11 +89,7 @@ App = {
             //add event eventListener
             App.eventListener();
 
-            // App.reloadJobs();
-            // App.reloadEmployees();
-            // App.reloadResources();
-            // App.reloadExpenses();
-            //retrieve job from contract
+            //refresh frontend
             return App.refreshFrontend();
 
           });
